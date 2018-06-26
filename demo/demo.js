@@ -719,7 +719,7 @@ var newNode = function(id, name,type,ruleGrouptype, x, y){
            //         d.innerHTML = '<h4><span index="'+type+'">'+data.groupName+'</span><div class="editbox"><div class="fix_icon" onclick="editModel(this)"></div><a href="javascript:void(0)" class="pull-right" onclick="removeElement(this);"></a></div></h4><ul>'+oStr+'</ul>'+ '<div class="ep"></div>';
            // },"json");
            var oStr = parseRuleList(metadata[1].ruleGroup.properties);  //解析返回的规则或评分列表
-           d.innerHTML = '<h4><span index="'+type+'">'+data.groupName+'</span><div class="editbox"><div class="fix_icon" onclick="editModel(this)"></div><a href="javascript:void(0)" class="pull-right" onclick="removeElement(this);"></a></div></h4><ul>'+oStr+'</ul>'+ '<div class="ep"></div>';
+           d.innerHTML = '<h4><span index="'+type+'">规则组</span><div class="editbox"><div class="fix_icon" onclick="editModel(this)"></div><a href="javascript:void(0)" class="pull-right" onclick="removeElement(this);"></a></div></h4><ul>'+oStr+'</ul>'+ '<div class="ep"></div>';
         }else if(type=='action'){
                 d.innerHTML = '<h4><span index="'+type+'">'+name+'</span><div class="editbox"><div class="fix_icon" onclick="editModel(this)"></div><a href="javascript:void(0)" class="pull-right" onclick="removeElement(this);"></a></div></h4>'+ '<div class="ep"></div>';
         }else if(type=='branch'){
