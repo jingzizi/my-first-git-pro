@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>拖拽编辑规则</title>
+<link rel="stylesheet" href="jquery-ui.custom.min.css" />
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="jquery-ui.min.js"></script>
+<script src="metadata.js"></script>
+<script src="layer/layer.js"></script>
+<script type="text/javascript" src="jsPlumb-2.2.8.js"></script>
+<script src="demo.js"></script>
+<style>
+*{padding:0; margin:0;font-family: '微软雅黑';color: #fff;}
+a{color:#59bac0; text-decoration:none;}
+li{list-style:none;}
+h1,h2,h3,h4,h5,h6,strong,b{font-weight:normal; font-size:100%;}
+em,i{font-style:normal;}
+body{font-size:12px; line-height:12px;background-color: #101f32;}
+table {border-collapse:collapse; border-spacing:0; }
+th,td { padding: 0; margin:0;}
+img{border:none; vertical-align:top;}
+li{list-style:none;}
+.clearfix:after{ display:block; clear:both; content:""; }
+.clearfix{ zoom:1;}
+html,body{
+	background-color: #101f32;
+}
+#container {
+	min-height: 700px;
+	position: relative;
+	border: 1px solid #000;
+	z-index: 0;
+	overflow: auto;
+	background:url(gzbg.png) #232323;
+}
+#container .model {
+	border: 1px solid #438eb9;
+	border-radius: 5px;
+	margin-bottom: 0;
+	min-width: 160px;
+	position: relative;
+	cursor: pointer;
+}
+#container .model h4{
+	background-color: #438eb9;
+	text-align: center;
+	background-image: none;
+	font-size: 14px;
+	color: #fff;
+	border: 1px solid #438eb9;
+	margin: 0px;
+	height: 40px;
+	vertical-align: middle;
+	padding-top:10px;
+	line-height: 16px;
+}
+#container .model ul{
+	max-height: 320px;
+	overflow: auto;
+	width: 100%;
+	min-height: 40px;
+}
+/*规则组列表样式增加位置*/
+#container .ruleGroup ul{
+	padding-bottom: 30px;
+}
+#container .model ul li{
+	border-bottom: 1px solid #666;
+	font-size: 12px;
+	list-style-type: none;
+	color:#fff;
+	line-height: 18px;
+}
+.jtk-endpoint, .endpointTargetLabel, .endpointSourceLabel {
+    cursor: pointer;
+}
+#leftMenu li{
+	height: 40px;
+	width: 150px;
+	background-color: #438eb9;
+	border-radius: 5px;
+	font-size: 14px;
+	color: #fff;
+	text-align: center;
+	margin-bottom: 10px;
+	list-style-type: none;
+	vertical-align: middle;
+	line-height: 40px;
+	z-index: 1;
+	cursor: pointer;
+}
+/*编辑盒子*/
+.editbox{
+	position: absolute;
+	width:50px;
+	height: 14px;
+	left: 50%;
+	bottom: 10px;
+	margin-left: -24px;
+}
+/*删除按钮*/
+.editbox .pull-right{
+	margin-right: 4px;
+	width: 14px;
+	height: 14px;
+	background-image:url(to_close.png);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	float: left;
+}
+/*编辑按钮*/
+.editbox .fix_icon{
+	width: 14px;
+	height: 14px;
+	background-image:url(edit_icon.png);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	float: left;
+	margin-right: 16px;
+}
+.left{
+	width:100%;
+}
+#leftMenu{
+	overflow: :auto;
+	margin: 0px;
+	padding: 0px;
+}
+/*左侧导航*/
+/*接口开始*/
+#leftMenu .APIstart{
+	border-radius: 50%;
+	width:90px;
+	height: 90px;
+	text-align: center;
+	line-height: 90px;
+	margin: 0 auto 20px;
+}
+/*规则组*/
+#leftMenu .ruleGroup{
+	border-radius: 0;
+	margin:0 auto 20px;
+}
+/*分支*/
+#leftMenu .branch{
+	width:80px;
+	height: 80px;
+	margin:0 auto 20px;
+	line-height: 80px;
+}
+/*动作*/
+#leftMenu .action{
+	border-radius: 50%;
+	margin:0 auto 20px;
+}
+/*结束*/
+#leftMenu .end{
+	border-radius: 20px;
+	margin:0 auto 20px;
+}
+/*控件实际样式*/
+/*.model.APIstart .fix_icon{
+	width:20px;
+	height:20px;
+	position: absolute;
+	left: 40px;
+	top:66px;
+	background:url(edit_icon.png) no-repeat center center;
+	cursor: pointer;
+}
+.model.branch .fix_icon{
+	width:20px;
+	height:20px;
+	position: absolute;
+	left: 40px;
+	top:66px;
+	background:url(edit_icon.png) no-repeat center center;
+	cursor: pointer;
+}*/
+/*接口开始*/
+#container .model.APIstart{
+	width: 100px;
+	border-radius: 50%;
+	height: 100px;
+	overflow: hidden;
+	background-color: #438eb9;
+	min-width: 100px;
+}
+/*规则组开始*/
+#container .model.ruleGroup{
+	border-radius: 0;
+}
+/*分支*/
+#container .model.branch{
+	width:100px;
+	height: 100px;
+	min-width: 100px;
+	background-color: #438eb9;
+}
+/*动作*/
+#container .model.action{
+	border-radius: 50%;
+	overflow: hidden;
+	background-color: #438eb9;
+}
+/*结束*/
+#container .model.end{
+	border-radius: 20px;
+	overflow: hidden;
+	background-color: #438eb9;
+}
+.oleftpart{
+	float: left;
+	width: 200px;
+	border:1px solid #000;
+	background-color: #232323;
+}
+.oleftpart .choosemodel{
+	font-size: 16px;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	border-bottom:1px solid #000;
+	margin-bottom: 20px;
+}
+.orightpart{
+	margin-left: 220px;
+	background-color: #232323;
+}
+.orightpart .savebox{
+	height: 40px;
+	padding-top: 10px;
+	border:1px solid #000;
+	border-bottom: none;
+}
+.orightpart .rights .savetit{
+	float: left;
+	line-height: 30px;
+	margin-left: 20px;
+}
+.orightpart .rights input[type=text]{
+	float: left;
+	width: 190px;
+	height: 30px;
+	padding-left: 10px;
+	border:1px solid #263341;
+	background-color: #0e1b2b;
+	outline: none;
+}
+.orightpart .doSaveBtn{
+	float: left;
+	width: 60px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	color: #fff;
+	cursor: pointer;
+	background-color: #00cdd6;
+	margin-left: 14px;
+}
+.orightpart  .testto{
+	float: left;
+	margin-left: 40px;
+	width:80px;
+	height:30px;
+	text-align: center;
+	line-height: 30px;
+	color: #fff;
+	background-color: #00cdd6;
+	cursor: pointer
+}
+</style>
+</head>
+<body>
+	<div class="clearfix">
+		<div class="oleftpart" >
+			<h3 class="choosemodel">选择控件</h3>
+			<div class="content_wrap">
+				<div class="left">
+					<ul id="leftMenu"></ul>
+				</div>
+			</div>
+		</div>
+		<div class="orightpart">
+			<div class="savebox clearfix">
+				<div class="rights">
+					<span class="savetit">名称：</span>
+					<input type="text" id="modelName" name="modelName" />
+					<span class="doSaveBtn" id="doSave" onclick="doSave()">保存</span>
+					<!-- <span id="testto" class="testto" onclick="totest()">测试回显</span>  -->
+					<span id="testto" class="testto" onclick="lays()">测试回显</span> 
+				</div>
+			</div>
+			<div id="container"></div>
+		</div>
+	</div>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		//设置左侧菜单
+		setLeftMenu(metadata)
+		//鼠标移入控件，显示编辑图形
+
+	});
+	function lays(){
+		layer.open({
+		  type: 2, 
+		  title: '流程编辑',
+  		  shadeClose: true,
+          shade: 0.8,
+          area: ['800px', '90%'],
+		  content: 'thehtml.html' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+		});
+	};
+</script>
+</body>
+</html>
